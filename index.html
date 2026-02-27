@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Ranker - Premium Tier List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Elite Ranker</h1>
+            <p>Drag and drop to rank the portraits</p>
+            <div class="upload-section">
+                <label for="imageUpload" class="upload-btn">
+                    Import Images
+                    <input type="file" id="imageUpload" accept="image/*" multiple hidden>
+                </label>
+            </div>
+        </header>
+
+        <main>
+            <div class="tier-container">
+                <!-- Tier S -->
+                <div class="tier-row" data-tier="S">
+                    <div class="tier-label label-s" contenteditable="true">S</div>
+                    <div class="tier-content remove-drag-ghost" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    </div>
+                </div>
+                <!-- Tier A -->
+                <div class="tier-row" data-tier="A">
+                    <div class="tier-label label-a" contenteditable="true">A</div>
+                    <div class="tier-content" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <!-- Tier B -->
+                <div class="tier-row" data-tier="B">
+                    <div class="tier-label label-b" contenteditable="true">B</div>
+                    <div class="tier-content" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <!-- Tier C -->
+                <div class="tier-row" data-tier="C">
+                    <div class="tier-label label-c" contenteditable="true">C</div>
+                    <div class="tier-content" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <!-- Tier D -->
+                <div class="tier-row" data-tier="D">
+                    <div class="tier-label label-d" contenteditable="true">D</div>
+                    <div class="tier-content" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+            </div>
+
+            <div class="bank-container">
+                <h2>Unranked Collection</h2>
+                <div class="image-bank" id="bank" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <!-- Images will be injected here via JS to ensure correct paths if filenames vary, 
+                         but since we know the logic, we can also hardcode or auto-detect. 
+                         For now we will let JS populate or hardcode if we know the names. 
+                         Actually, I'll use JS to load them if I can, or just hardcode standard names if I renamed them.
+                         I didn't rename them, I copied them. 
+                         The filenames are tricky with timestamps.
+                         I'll assume I can find them or I'll just rely on the user to see them?
+                         No, I should list the assets directory to get the filenames and then populate.
+                    -->
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

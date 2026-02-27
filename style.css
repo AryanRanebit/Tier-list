@@ -1,0 +1,198 @@
+:root {
+    --bg-color: #0f0f13;
+    --text-color: #ffffff;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --tier-s: #ff7f7f;
+    --tier-a: #ffbf7f;
+    --tier-b: #ffdf7f;
+    --tier-c: #ffff7f;
+    --tier-d: #bfff7f;
+    /* Actually standard tier colors are S: Red, A: Orange, B: Yellow, C: Green, D: Blue usually? Or S: Gold? Let's go with standard tiermaker colors */
+
+    --color-s: #FF7F7F;
+    --color-a: #FFBF7F;
+    --color-b: #FFDF7F;
+    --color-c: #FFFF7F;
+    --color-d: #BFFF7F;
+
+    /* Premium Palette */
+    --accent: #646cff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+header {
+    text-align: center;
+    padding: 20px 0;
+}
+
+header h1 {
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    background: linear-gradient(to right, #fff, #aaa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+header p {
+    color: #888;
+    font-weight: 300;
+    margin-bottom: 20px;
+}
+
+.upload-section {
+    margin-top: 15px;
+}
+
+.upload-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), #4f58e1);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 15px rgba(100, 108, 255, 0.3);
+}
+
+.upload-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(100, 108, 255, 0.4);
+}
+
+.upload-btn:active {
+    transform: scale(0.98);
+}
+
+.tier-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tier-row {
+    display: flex;
+    min-height: 100px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tier-row:hover {
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.tier-label {
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #000;
+    flex-shrink: 0;
+}
+
+.label-s {
+    background-color: #ff7f7f;
+}
+
+.label-a {
+    background-color: #ffbf7f;
+}
+
+.label-b {
+    background-color: #ffdf7f;
+}
+
+.label-c {
+    background-color: #ffff7f;
+}
+
+.label-d {
+    background-color: #bfff7f;
+}
+
+.tier-content {
+    flex-grow: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+}
+
+.bank-container {
+    margin-top: 20px;
+    background: var(--glass-bg);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--glass-border);
+}
+
+.bank-container h2 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: #aaa;
+    font-weight: 400;
+}
+
+.image-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    min-height: 120px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.draggable-item {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    cursor: grab;
+    object-fit: cover;
+    transition: transform 0.2s, box-shadow 0.2s;
+    user-select: none;
+}
+
+.draggable-item:active {
+    cursor: grabbing;
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.draggable-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
