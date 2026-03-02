@@ -79,13 +79,28 @@ function drop(ev) {
 
     let target = ev.target;
 
-    // If dropped on an image, find the parent container
+    // If dropped on an image, remember the image so we can insert relative to it
+    let dropOnImage = null;
     if (target.classList.contains('draggable-item')) {
+        dropOnImage = target;
         target = target.parentElement;
     }
 
     // Ensure we are dropping into a valid container
     if (target.classList.contains('tier-content') || target.classList.contains('image-bank')) {
-        target.appendChild(draggedElement);
+        if (dropOnImage && dropOnImage !== draggedElement) {
+            // Determine if we should insert before or after the target image
+            const boundingBox = dropOnImage.getBoundingClientRect();
+            const dropPointX = ev.clientX;
+            const midpoint = boundingBox.left + (boundingBox.width / 2);
+
+            if (dropPointX < midpoint) {
+                target.insertBefore(draggedElement, dropOnImage);
+            } else {
+                target.insertBefore(draggedElement, dropOnImage.nextSibling);
+            }
+        } else {
+            target.appendChild(draggedElement);
+        }
     }
 }
