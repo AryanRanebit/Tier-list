@@ -53,6 +53,11 @@ function handleUpload(event) {
 
 function allowDrop(ev) {
     ev.preventDefault();
+    let targetArea = ev.target.closest('.tier-content, .image-bank');
+    if (targetArea) {
+        document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        targetArea.classList.add('drag-over');
+    }
 }
 
 function drag(ev) {
@@ -65,10 +70,20 @@ document.addEventListener('dragend', (ev) => {
     if (ev.target.classList.contains('draggable-item')) {
         ev.target.style.opacity = "1";
     }
+    document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+});
+
+// Remove drag-over when dragged outside of drop zones entirely
+document.addEventListener('dragleave', (ev) => {
+    if (!ev.relatedTarget || ev.relatedTarget.nodeName === 'HTML') {
+        document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    }
 });
 
 function drop(ev) {
     ev.preventDefault();
+    document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+
     const data = ev.dataTransfer.getData("text");
     const draggedElement = document.getElementById(data);
 
