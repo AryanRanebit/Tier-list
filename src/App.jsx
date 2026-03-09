@@ -16,13 +16,20 @@ import {
 
 import { SortableItem } from './components/SortableItem';
 
-const initialItems = [
-    { id: '1', url: 'assets/paris_eiffel_tower_1772208235326.png', tier: 'bank' },
-    { id: '2', url: 'assets/japan_mount_fuji_1772208248666.png', tier: 'bank' },
-    { id: '3', url: 'assets/venice_canals_1772208263842.png', tier: 'bank' },
-    { id: '4', url: 'assets/maldives_beach_1772208278284.png', tier: 'bank' },
-    { id: '5', url: 'assets/greece_santorini_1772208292347.png', tier: 'bank' },
-];
+const initialItems = {
+    S: [],
+    A: [],
+    B: [],
+    C: [],
+    D: [],
+    bank: [
+        { id: '1', name: 'Portrait 1', imageUrl: 'assets/paris_eiffel_tower_1772208235326.png' },
+        { id: '2', name: 'Portrait 2', imageUrl: 'assets/japan_mount_fuji_1772208248666.png' },
+        { id: '3', name: 'Portrait 3', imageUrl: 'assets/venice_canals_1772208263842.png' },
+        { id: '4', name: 'Portrait 4', imageUrl: 'assets/maldives_beach_1772208278284.png' },
+        { id: '5', name: 'Portrait 5', imageUrl: 'assets/greece_santorini_1772208292347.png' },
+    ]
+};
 
 const TIERS = ['S', 'A', 'B', 'C', 'D'];
 
@@ -40,7 +47,12 @@ function App() {
         })
     );
 
-    const getItemsByTier = (tier) => items.filter((item) => item.tier === tier);
+    function findContainer(id) {
+        if (id in items) {
+            return id;
+        }
+        return Object.keys(items).find((key) => items[key].some((item) => item.id === id));
+    }
 
     function handleDragEnd(event) {
         const { active, over } = event;
@@ -52,37 +64,40 @@ function App() {
 
         if (activeId === overId) return;
 
-        const isActiveATier = TIERS.includes(activeId) || activeId === 'bank';
-        const isOverATier = TIERS.includes(overId) || overId === 'bank';
+        const activeContainer = findContainer(activeId);
+        const overContainer = findContainer(overId);
 
-        if (!isActiveATier && isOverATier) {
-            // Dropping an item onto an empty tier
-            setItems((items) => {
-                const activeIndex = items.findIndex((item) => item.id === activeId);
-                return [
-                    ...items.slice(0, activeIndex),
-                    { ...items[activeIndex], tier: overId },
-                    ...items.slice(activeIndex + 1),
-                ];
-            });
-            return;
-        }
+        if (!activeContainer || !overContainer) return;
 
-        if (!isActiveATier && !isOverATier) {
-            // Dropping an item onto another item
-            setItems((items) => {
-                const activeIndex = items.findIndex((item) => item.id === activeId);
-                const overIndex = items.findIndex((item) => item.id === overId);
+        if (activeContainer === overContainer) {
+            const activeIndex = items[activeContainer].findIndex((item) => item.id === activeId);
+            const overIndex = items[overContainer].findIndex((item) => item.id === overId);
 
-                const overItem = items[overIndex];
+            setItems((prev) => ({
+                ...prev,
+                [activeContainer]: arrayMove(prev[activeContainer], activeIndex, overIndex),
+            }));
+        } else {
+            setItems((prev) => {
+                const activeItems = [...prev[activeContainer]];
+                const overItems = [...prev[overContainer]];
 
-                let newArray = [...items];
-                if (items[activeIndex].tier !== overItem.tier) {
-                    // Moved to a different list
-                    newArray[activeIndex] = { ...newArray[activeIndex], tier: overItem.tier };
+                const activeIndex = activeItems.findIndex((item) => item.id === activeId);
+                const overIndex = overItems.findIndex((item) => item.id === overId);
+
+                const [movedItem] = activeItems.splice(activeIndex, 1);
+
+                if (overIndex >= 0) {
+                    overItems.splice(overIndex, 0, movedItem);
+                } else {
+                    overItems.push(movedItem);
                 }
-                // Move it within the combined array
-                return arrayMove(newArray, activeIndex, overIndex);
+
+                return {
+                    ...prev,
+                    [activeContainer]: activeItems,
+                    [overContainer]: overItems,
+                };
             });
         }
     }
@@ -97,11 +112,14 @@ function App() {
                 reader.onload = (e) => {
                     newItems.push({
                         id: `uploaded-${Date.now()}-${i}`,
-                        url: e.target.result,
-                        tier: 'bank'
+                        name: file.name,
+                        imageUrl: e.target.result,
                     });
                     if (newItems.length === files.length) {
-                        setItems((prev) => [...prev, ...newItems]);
+                        setItems((prev) => ({
+                            ...prev,
+                            bank: [...prev.bank, ...newItems],
+                        }));
                     }
                 };
                 reader.readAsDataURL(file);
@@ -131,7 +149,7 @@ function App() {
                 <main>
                     <div className="tier-container">
                         {TIERS.map((tier) => {
-                            const tierItems = getItemsByTier(tier);
+                            const tierItems = items[tier];
                             return (
                                 <SortableContext key={tier} id={tier} items={tierItems} strategy={rectSortingStrategy}>
                                     <div className="tier-row" data-tier={tier}>
@@ -140,7 +158,7 @@ function App() {
                                         </div>
                                         <div className="tier-content">
                                             {tierItems.map((item) => (
-                                                <SortableItem key={item.id} id={item.id} url={item.url} />
+                                                <SortableItem key={item.id} id={item.id} url={item.imageUrl} />
                                             ))}
                                         </div>
                                     </div>
@@ -151,10 +169,10 @@ function App() {
 
                     <div className="bank-container">
                         <h2>Unranked Collection</h2>
-                        <SortableContext id="bank" items={getItemsByTier('bank')} strategy={rectSortingStrategy}>
+                        <SortableContext id="bank" items={items.bank} strategy={rectSortingStrategy}>
                             <div className="image-bank">
-                                {getItemsByTier('bank').map((item) => (
-                                    <SortableItem key={item.id} id={item.id} url={item.url} />
+                                {items.bank.map((item) => (
+                                    <SortableItem key={item.id} id={item.id} url={item.imageUrl} />
                                 ))}
                             </div>
                         </SortableContext>
