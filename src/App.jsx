@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
     DndContext,
     closestCenter,
@@ -6,6 +5,8 @@ import {
     PointerSensor,
     useSensor,
     useSensors,
+    DragOverlay,
+    defaultDropAnimationSideEffects,
 } from '@dnd-kit/core';
 import {
     arrayMove,
@@ -35,6 +36,7 @@ const TIERS = ['S', 'A', 'B', 'C', 'D'];
 
 function App() {
     const [items, setItems] = useState(initialItems);
+    const [activeId, setActiveId] = useState(null);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -54,7 +56,12 @@ function App() {
         return Object.keys(items).find((key) => items[key].some((item) => item.id === id));
     }
 
+    function handleDragStart(event) {
+        setActiveId(event.active.id);
+    }
+
     function handleDragEnd(event) {
+        setActiveId(null);
         const { active, over } = event;
 
         if (!over) return;
@@ -144,6 +151,7 @@ function App() {
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
             >
                 <main>
@@ -178,6 +186,20 @@ function App() {
                         </SortableContext>
                     </div>
                 </main>
+
+                <DragOverlay dropAnimation={{
+                    duration: 200,
+                    easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
+                    sideEffects: defaultDropAnimationSideEffects({
+                        styles: { active: { opacity: '0.5' } }
+                    })
+                }}>
+                    {activeId ? (() => {
+                        const containerId = findContainer(activeId);
+                        const item = items[containerId]?.find(i => i.id === activeId);
+                        return item ? <SortableItem id={item.id} url={item.imageUrl} isOverlay /> : null;
+                    })() : null}
+                </DragOverlay>
             </DndContext>
         </div>
     );

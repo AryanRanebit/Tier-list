@@ -233,6 +233,11 @@ header p {
 .draggable-wrapper {
     touch-action: none;
     cursor: grab;
+    border-radius: 12px;
+}
+
+.draggable-wrapper:active {
+    cursor: grabbing;
 }
 
 .draggable-item {
@@ -241,24 +246,24 @@ header p {
     border-radius: 12px;
     object-fit: cover;
     pointer-events: none;
-    /* Let the wrapper handle drag events */
     transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, opacity 0.2s;
     user-select: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     border: 2px solid transparent;
 }
 
-.draggable-item:hover {
-    transform: translateY(-4px) scale(1.05);
+.draggable-wrapper:not(.is-overlay):hover .draggable-item {
+    transform: scale(1.05);
+    /* Exactly 5% scale */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
     border-color: rgba(255, 255, 255, 0.3);
     z-index: 10;
 }
 
-.draggable-item:active {
-    cursor: grabbing;
-    transform: scale(0.95);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+.draggable-wrapper.is-overlay .draggable-item {
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6);
+    border-color: var(--accent);
 }
 
 /* Custom Scrollbar for nice aesthetics */

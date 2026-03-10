@@ -14,13 +14,14 @@ export function SortableItem(props) {
 
     const style = {
         transform: CSS.Transform.toString(transform),
-        transition,
-        zIndex: isDragging ? 2 : 1,
-        opacity: isDragging ? 0.8 : 1,
+        transition: props.isOverlay ? undefined : transition,
+        zIndex: props.isOverlay ? 999 : (isDragging ? 2 : 1),
+        // Ghost effect for the original spot, overlay gets full opacity
+        opacity: isDragging && !props.isOverlay ? 0.3 : 1,
     };
 
     return (
-        <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="draggable-wrapper">
+        <div ref={setNodeRef} style={style} {...attributes} {...listeners} className={`draggable-wrapper ${props.isOverlay ? 'is-overlay' : ''}`}>
             <img src={props.url} alt={props.alt || 'Item'} className="draggable-item" />
         </div>
     );
